@@ -28,6 +28,8 @@ namespace QuickDictionary
 
         public DeletionMode DeletionMode;
 
+        public bool KeyIsClass;
+
         private BuiltConfig(
             bool hasNullKey,
             KeyT? nullKey,
@@ -38,6 +40,7 @@ namespace QuickDictionary
             NullKey = nullKey!;
             IsPow2Sized = isPow2Sized;
             DeletionMode = deletionMode;
+            KeyIsClass = typeof(KeyT).IsClass;
         }
 
         public static BuiltConfig<KeyT, ConfigT> Build()
@@ -56,6 +59,16 @@ namespace QuickDictionary
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !HasNullKey;
+        }
+
+        // For ref-types, the uninitialized array will be filled with nulls
+        public bool ShouldFillEntriesArrayWithNullKey
+        {
+            // Conditions:
+            // - There is a null key specified
+            // - The key is not a ref-type or it is a ref-type that is not null
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => HasNullKey && (!KeyIsClass || NullKey != null);
         }
     }
 }
