@@ -14,7 +14,8 @@ namespace QuickDictionary
 
         public static virtual bool IsPow2Sized => false;
 
-        public static virtual DeletionMode DeletionMode => DeletionMode.Tombstone;
+        public static virtual DeletionMode DeletionMode
+            => DeletionMode.Tombstone | DeletionMode.ClearGCReferences;
     }
 
     internal struct BuiltConfig<KeyT, ConfigT>
